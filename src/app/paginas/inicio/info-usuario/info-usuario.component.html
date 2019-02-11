@@ -1,0 +1,34 @@
+
+<div class="animated fast fadeIn">
+    <div class="box">
+        <h2>Usuario</h2>
+        <app-imagen-usuario [mostrarNombre]="true" (clickButton)="emit_botton($event)"></app-imagen-usuario><br>
+    </div>
+
+    <p-panel header="Padre" [toggleable]="true">
+    <ul>
+        <li>Nombre: {{usuario.nombre}}</li>
+        <li>Apellido: {{usuario.apellidos}}</li>
+        <li>DNI: {{usuario.dni}}</li>
+        <li>Profesion: {{usuario.profesion}}</li>
+    </ul>
+    </p-panel>
+
+
+    <h4>Hijos</h4>
+
+    <div class="hijos">
+        <div *ngFor="let hijo of usuario.hijos; let i = index" style="width: 30%;">
+            <p-card>
+                <h4>{{ i + 1 }}</h4>
+                <p> Nombre: {{hijo.nombre}}</p>
+                <p> Apellidos: {{hijo.apellidos}}</p>
+                <p> Edad: {{hijo.edad}}</p>
+            </p-card>
+            <br>
+        </div>
+    </div>
+</div>
+
+
+

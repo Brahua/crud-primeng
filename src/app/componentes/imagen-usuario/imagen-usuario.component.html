@@ -1,0 +1,11 @@
+<div style="display: flex; justify-content: center;">
+    <p-card [style]="{width: '200px'}" styleClass="ui-card-shadow">
+        <p-header>
+            <img src="Card" src="../../../assets/imagenes/img_avatar.png">
+        </p-header>
+        <p *ngIf="mostrarNombre">Josue</p>
+        <p-footer>
+            <button pButton type="button" label="Click" icon="pi pi-check" style="margin-right: .25em" (click)="onClick_pressBoton()"></button>
+        </p-footer>
+    </p-card>
+</div>
