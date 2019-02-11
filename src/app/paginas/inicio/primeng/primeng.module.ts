@@ -13,6 +13,7 @@ import { DataTableModule } from 'primeng/datatable';
 import { DialogModule } from 'primeng/dialog';
 import { MessagesModule } from 'primeng/messages';
 import { MessageModule } from 'primeng/message';
+import { ServicioPruebaService } from 'src/app/servicios/servicio-prueba.service';
 
 export const ruta: Routes = [
 
@@ -41,6 +42,7 @@ export const ruta: Routes = [
     DialogModule,
     MessageModule,
     MessagesModule
-  ]
+  ],
+  providers: [ServicioPruebaService]
 })
 export class PrimengModule { }

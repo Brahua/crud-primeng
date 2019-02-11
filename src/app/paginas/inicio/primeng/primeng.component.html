@@ -37,10 +37,12 @@
     <div class="hijos">
       <div *ngFor="let hijo of temporalUsuario.hijos; let i = index" style="width: 30%;">
         <p-card>
-          <h4>{{ i + 1 }}</h4>
           <p> Nombre: {{hijo.nombre}}</p>
           <p> Apellidos: {{hijo.apellidos}}</p>
           <p> Edad: {{hijo.edad}}</p>
+          <hr>          
+          <button pButton type="button" icon="pi pi-times" class="ui-button-danger" (click)="onClickEliminarHijo(i)" style="margin-right: 3px;"></button>
+          <button pButton type="button" icon="pi pi-pencil" class="ui-button-warning" (click)="onClickEditarHijo(hijo, i)"></button>
         </p-card>
         <br>
       </div>
@@ -50,7 +52,8 @@
 
     <p-footer style="text-align: left;">
       <button pButton (click)="onClickGuardar()" type="button" label="Guardar" class="ui-button-rounded" icon="pi pi-check" style="margin-right: 5px;"></button>
-      <button pButton type="button" label="Agregar hijos" class="ui-button-rounded ui-button-success" icon="pi pi-plus" (click)="display = true"></button>
+      <button pButton type="button" label="Agregar hijos" class="ui-button-rounded ui-button-success" icon="pi pi-plus" (click)="modalHijos = true" style="margin-right: 5px;"></button>
+      <button pButton type="button" label="Limpiar" class="ui-button-rounded ui-button-secondary" icon="pi pi-spinner" (click)="limpiar()"></button>
     </p-footer>
 
     
@@ -103,7 +106,7 @@
   </p-panel>
   </div>
   
-  <p-dialog header="Agregar Hijo" [(visible)]="display" [modal]="true" [responsive]="true" [style]="{width: '500px', minWidth: '200px'}"
+  <p-dialog header="Agregar Hijo" [(visible)]="modalHijos" [modal]="true" [responsive]="true" [style]="{width: '500px', minWidth: '200px'}"
     [minY]="70" [baseZIndex]="10000">
     <div class="ui-g ui-fluid" style="display: flex; justify-content: center;">
       <div class="ui-g-12 ui-md-8">
@@ -127,6 +130,7 @@
     </div>
     <p-messages [(value)]="msgsh"></p-messages>
     <p-footer>
-      <button type="button" pButton icon="pi pi-check" label="Añadir" (click)="onClickGuardarHijo()"></button>
+      <button type="button" pButton icon="pi pi-check" label="Guardar" (click)="onClickGuardarHijo()"></button>
+      <button type="button" pButton label="Cancelar" (click)="modalHijos=false" class="ui-button-secondary"></button>
     </p-footer>
   </p-dialog>

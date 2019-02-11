@@ -3,28 +3,23 @@ import { IUsuario } from './primeng.interface';
 import { IHijos } from './primeng.interface';
 import { Message } from 'primeng/components/common/api';
 import { MessageService } from 'primeng/components/common/messageservice';
+import { ServicioPruebaService } from 'src/app/servicios/servicio-prueba.service';
 @Component({
   selector: 'app-primeng',
   templateUrl: './primeng.component.html',
   styleUrls: ['./primeng.component.css'],
   providers: [MessageService]
 })
-export class PrimengComponent {
-
+export class PrimengComponent implements OnInit {
   usuarios: IUsuario[] = [
     {
-      nombre: 'Josue',
+      nombre: 'Jhorman',
       apellidos: 'Bravo',
       dni: 72251322,
-      profesion: 'Ing',
+      profesion: 'Ing. de Software',
       hijos: [
         {
-          nombre: 'Junior',
-          apellidos: 'Bravo',
-          edad: 10
-        },
-        {
-          nombre: 'Abigail',
+          nombre: 'Abi',
           apellidos: 'Bravo',
           edad: 15
         }
@@ -32,17 +27,42 @@ export class PrimengComponent {
     }
   ];
 
-  temporalUsuario: IUsuario = {};
+  temporalUsuario: IUsuario = { hijos: [] };
 
   hijos: IHijos[] = [];
 
   temporalHijo: IHijos = {};
 
   editar = false;
+  editarHijo = false;
   indice: number;
-  display = false;
+  modalHijos = false;
   msgs: Message[] = [];
   msgsh: Message[] = [];
+
+  constructor(private servicio: ServicioPruebaService) {
+
+  }
+
+  ngOnInit(): void {
+    this.obtenerListaUsuarios();
+  }
+
+  obtenerListaUsuarios() {
+    this.servicio.listarUsuarios().subscribe(respuesta => {
+      this.usuarios = respuesta;
+      console.log('1', this.usuarios);
+    });
+    console.log('2', this.usuarios);
+  }
+
+  limpiar() {
+    this.temporalUsuario = { hijos: [] };
+    this.temporalHijo = {};
+  }
+
+
+
 
 
   // Usuarios
@@ -50,13 +70,22 @@ export class PrimengComponent {
     let validado = false;
     let mensaje = '';
 
-    if (this.temporalUsuario.nombre === undefined || this.temporalUsuario.nombre.trim() === '') {
+    if (
+      this.temporalUsuario.nombre === undefined ||
+      this.temporalUsuario.nombre.trim() === ''
+    ) {
       mensaje = 'Ingrese un nombre';
-    } else if (this.temporalUsuario.apellidos === undefined || this.temporalUsuario.apellidos.trim() === '') {
+    } else if (
+      this.temporalUsuario.apellidos === undefined ||
+      this.temporalUsuario.apellidos.trim() === ''
+    ) {
       mensaje = 'Ingrese un apellido';
     } else if (this.temporalUsuario.dni === undefined) {
       mensaje = 'Ingrese el dni';
-    } else if (this.temporalUsuario.profesion === undefined || this.temporalUsuario.profesion.trim() === '') {
+    } else if (
+      this.temporalUsuario.profesion === undefined ||
+      this.temporalUsuario.profesion.trim() === ''
+    ) {
       mensaje = 'Ingrese la profesion';
     }
 
@@ -75,11 +104,19 @@ export class PrimengComponent {
       if (this.editar) {
         this.usuarios[this.indice] = this.temporalUsuario;
         this.msgs = [];
-        this.msgs.push({ severity: 'success', summary: 'Editado!', detail: 'Se editó correctamente el usuario.' });
+        this.msgs.push({
+          severity: 'success',
+          summary: 'Editado!',
+          detail: 'Se editó correctamente el usuario.'
+        });
       } else {
         this.usuarios.push(this.temporalUsuario);
         this.msgs = [];
-        this.msgs.push({ severity: 'success', summary: 'Guardado!', detail: 'Se agregó correctamente el usuario.' });
+        this.msgs.push({
+          severity: 'success',
+          summary: 'Guardado!',
+          detail: 'Se agregó correctamente el usuario.'
+        });
       }
       this.temporalUsuario = {};
       this.editar = false;
@@ -97,10 +134,17 @@ export class PrimengComponent {
     if (r) {
       this.usuarios.splice(i, 1);
       this.msgs = [];
-      this.msgs.push({ severity: 'error', summary: 'Eliminado!', detail: 'Se eliminó correctamente el usuario.' });
+      this.msgs.push({
+        severity: 'error',
+        summary: 'Eliminado!',
+        detail: 'Se eliminó correctamente el usuario.'
+      });
     }
     this.temporalUsuario = {};
   }
+
+
+
 
 
 
@@ -109,7 +153,10 @@ export class PrimengComponent {
     let valida = false;
     let mensaje = '';
 
-    if (this.temporalHijo.nombre === undefined || this.temporalHijo.nombre.trim() === '') {
+    if (
+      this.temporalHijo.nombre === undefined ||
+      this.temporalHijo.nombre.trim() === ''
+    ) {
       mensaje = 'Ingresa el nombre del hijo';
     } else if (this.temporalHijo.edad === undefined) {
       mensaje = 'Ingresa la edad del hijo';
@@ -127,15 +174,55 @@ export class PrimengComponent {
 
   onClickGuardarHijo() {
     if (this.validarHijo()) {
-      this.temporalHijo.apellidos = this.temporalUsuario.apellidos;
-      this.hijos.push(this.temporalHijo);
-      this.temporalUsuario.hijos = [];
-      this.temporalUsuario.hijos = this.hijos;
-      this.temporalHijo = {};
-      this.msgsh = [];
-      this.msgsh.push({ severity: 'success', summary: 'Guardado!', detail: 'Se agregó correctamente el hijo.' });
+      if (this.editarHijo) {
+        console.log('EDITAR');
+        this.temporalUsuario.hijos[this.indice] = this.temporalHijo;
+        this.msgsh = [];
+        this.msgsh.push({
+          severity: 'success',
+          summary: 'Editado!',
+          detail: 'Se editó correctamente el hijo.'
+        });
+        this.editarHijo = false;
+      } else {
+        console.log('GUARDAR');
+        this.temporalHijo.apellidos = this.temporalUsuario.apellidos;
+
+        this.temporalUsuario.hijos.push(this.temporalHijo);
+        this.temporalHijo = {};
+        this.msgsh = [];
+        this.msgsh.push({
+          severity: 'success',
+          summary: 'Guardado!',
+          detail: 'Se agregó correctamente el hijo.'
+        });
+      }
+      this.modalHijos = false;
+      // this.editarHijo = false;
     }
   }
+
+  onClickEliminarHijo(i: number) {
+    const r: boolean = confirm('¿Seguro?');
+    if (r) {
+      this.temporalUsuario.hijos.splice(i, 1);
+      this.msgs = [];
+      this.msgs.push({
+        severity: 'error',
+        summary: 'Eliminado!',
+        detail: 'Se eliminó correctamente el hijo.'
+      });
+    }
+  }
+
+  onClickEditarHijo(hijo: IHijos, i: number) {
+    this.modalHijos = true;
+    this.editarHijo = true;
+    this.indice = i;
+    this.temporalHijo = this.clonar(hijo);
+  }
+
+
 
 
 
@@ -168,7 +255,7 @@ export class PrimengComponent {
 
   public clonar_lista(lista: any): any {
     const r: any = [];
-    lista.forEach((element) => {
+    lista.forEach(element => {
       const re = this.clonar(element);
       r.push(re);
     });
